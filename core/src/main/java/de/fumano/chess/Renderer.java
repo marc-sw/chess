@@ -14,8 +14,10 @@ import de.fumano.chess.move.Move;
 import de.fumano.chess.piece.Piece;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Renderer {
 
@@ -47,7 +49,22 @@ public class Renderer {
     }
 
     private void loadRessources() {
-        for (FileHandle fileHandle: Gdx.files.internal("Chess/Wooden_2/Pieces").list()) {
+        String path = "Chess/Wooden_2/Pieces/";
+        String[] files = new String[] {
+            "Black_Bishop.png",
+            "Black_King.png",
+            "Black_Knight.png",
+            "Black_Pawn.png",
+            "Black_Queen.png",
+            "Black_Rook.png",
+            "White_Bishop.png",
+            "White_King.png",
+            "White_Knight.png",
+            "White_Pawn.png",
+            "White_Queen.png",
+            "White_Rook.png"
+        };
+        for (FileHandle fileHandle: Arrays.stream(files).map(f -> Gdx.files.internal(path + f)).toList()) {
             Texture texture = new Texture(fileHandle);
             Sprite sprite = new Sprite(texture);
             sprite.setSize(Chess.WORLD_SCALE, Chess.WORLD_SCALE);
