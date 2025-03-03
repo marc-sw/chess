@@ -24,6 +24,7 @@ public abstract class Piece {
         this.lastMoves = new ArrayList<>();
         this.moved = false;
         this.color = color;
+        //test asdas
     }
 
     public Vector2 getSpot() {
