@@ -39,9 +39,9 @@ public class Renderer {
         this.bitmapFont = new BitmapFont();
         this.bigFont = new BitmapFont();
         this.bitmapFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        this.bitmapFont.getData().setScale(1.5f);
+        this.bitmapFont.getData().setScale(0.015f * Chess.WORLD_SCALE);
         this.bigFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        this.bigFont.getData().setScale(3.0f);
+        this.bigFont.getData().setScale(0.03f * Chess.WORLD_SCALE);
         this.glyphLayout = new GlyphLayout(bigFont, "");
         this.loadRessources();
     }
@@ -50,7 +50,7 @@ public class Renderer {
         for (FileHandle fileHandle: Gdx.files.internal("Chess/Wooden_2/Pieces").list()) {
             Texture texture = new Texture(fileHandle);
             Sprite sprite = new Sprite(texture);
-            sprite.setSize(100, 100);
+            sprite.setSize(Chess.WORLD_SCALE, Chess.WORLD_SCALE);
 
             this.textures.add(texture);
             this.pieceSprites.put(fileHandle.nameWithoutExtension(), sprite);
@@ -64,7 +64,7 @@ public class Renderer {
 
     public void renderPiece(Piece piece, Vector2 spot) {
         Sprite sprite = pieceSprites.get(piece.toString());
-        sprite.setPosition(spot.x * 100 + 50, spot.y * 100 + 50);
+        sprite.setPosition(spot.x * Chess.WORLD_SCALE + Chess.BOARD_OFFSET, spot.y * Chess.WORLD_SCALE + Chess.BOARD_OFFSET);
         sprite.draw(spriteBatch);
     }
 
@@ -73,8 +73,8 @@ public class Renderer {
     }
 
     public void renderTimers(int whiteSeconds, int blackSeconds) {
-        bitmapFont.draw(spriteBatch, "%02d:%02d".formatted(whiteSeconds / 60, whiteSeconds % 60), 830, 33);
-        bitmapFont.draw(spriteBatch, "%02d:%02d".formatted(blackSeconds / 60, blackSeconds % 60), 830, 883);
+        bitmapFont.draw(spriteBatch, "%02d:%02d".formatted(whiteSeconds / 60, whiteSeconds % 60), Chess.WHITE_TIMER_X, Chess.WHITE_TIMER_Y);
+        bitmapFont.draw(spriteBatch, "%02d:%02d".formatted(blackSeconds / 60, blackSeconds % 60), Chess.BLACK_TIMER_X, Chess.BLACK_TIMER_Y);
     }
 
     public void renderEmptyBoard() {
@@ -87,16 +87,18 @@ public class Renderer {
 
     public void highlightPiece(Piece piece) {
         shapeRenderer.setColor(Color.WHITE);
-        shapeRenderer.rect(piece.getSpot().x * 100 + 50f, piece.getSpot().y * 100 + 50f, 100, 100);
+        shapeRenderer.rect(piece.getSpot().x * Chess.WORLD_SCALE + Chess.BOARD_OFFSET,
+            piece.getSpot().y * Chess.WORLD_SCALE + Chess.BOARD_OFFSET, Chess.WORLD_SCALE, Chess.WORLD_SCALE);
         shapeRenderer.setColor(Color.GREEN);
         for (Move move: piece.getAllMoves()) {
-            shapeRenderer.rect(move.getDestination().x * 100 + 50f, move.getDestination().y * 100 + 50f, 100, 100);
+            shapeRenderer.rect(move.getDestination().x * Chess.WORLD_SCALE + Chess.BOARD_OFFSET,
+                move.getDestination().y * Chess.WORLD_SCALE + Chess.BOARD_OFFSET, Chess.WORLD_SCALE, Chess.WORLD_SCALE);
         }
     }
 
     public void renderTextAtCenter(String text) {
         glyphLayout.setText(bigFont, text);
-        bigFont.draw(spriteBatch, glyphLayout, 450 - glyphLayout.width/2, 450 + glyphLayout.height/2);
+        bigFont.draw(spriteBatch, glyphLayout, Chess.WORLD_CENTER - glyphLayout.width/2, Chess.WORLD_CENTER + glyphLayout.height/2);
     }
 
     public void useOnSpriteBatch(Runnable runnable) {

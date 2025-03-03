@@ -16,6 +16,16 @@ public class Chess extends ApplicationAdapter {
     TODO: Playing over the network
      */
 
+    public static final int WORLD_SCALE = 100;
+    public static final int WORLD_SIZE = 9 * WORLD_SCALE;
+    public static final float BOARD_OFFSET = 0.5f * WORLD_SCALE;
+    public static final int BOARD_SIZE = 8 * WORLD_SCALE;
+    public static final float WORLD_CENTER = WORLD_SIZE / 2.0f;
+    public static final float WHITE_TIMER_X = 8.3f * WORLD_SCALE;
+    public static final float WHITE_TIMER_Y = 0.33f * WORLD_SCALE;
+    public static final float BLACK_TIMER_X = 8.3f * WORLD_SCALE;
+    public static final float BLACK_TIMER_Y = 8.83f * WORLD_SCALE;
+
     private ChessGame chessGame;
     private Renderer renderer;
     private Viewport viewport;
@@ -23,7 +33,7 @@ public class Chess extends ApplicationAdapter {
 
     @Override
     public void create() {
-        this.viewport = new FitViewport(900, 900);
+        this.viewport = new FitViewport(WORLD_SIZE, WORLD_SIZE);
         this.renderer = new Renderer(this.viewport);
         this.touchPos = new com.badlogic.gdx.math.Vector2();
         this.chessGame = new ChessGame();
@@ -60,10 +70,10 @@ public class Chess extends ApplicationAdapter {
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY());
             viewport.unproject(touchPos);
-            touchPos.x -= 50f;
-            touchPos.y -= 50f;
-            Vector2 spot = new Vector2((int) touchPos.x/100, (int) touchPos.y/100);
-            if (touchPos.x >= 0 && touchPos.y >= 0 && touchPos.x < 800 && touchPos.y < 800) {
+            touchPos.x -= BOARD_OFFSET;
+            touchPos.y -= BOARD_OFFSET;
+            Vector2 spot = new Vector2((int) touchPos.x/WORLD_SCALE, (int) touchPos.y/WORLD_SCALE);
+            if (touchPos.x >= 0 && touchPos.y >= 0 && touchPos.x < BOARD_SIZE && touchPos.y < BOARD_SIZE) {
                 chessGame.getActiveState().handleClick(spot);
             }
         }

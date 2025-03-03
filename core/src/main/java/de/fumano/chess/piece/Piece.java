@@ -2,6 +2,7 @@ package de.fumano.chess.piece;
 
 import de.fumano.chess.Board;
 import de.fumano.chess.Color;
+import de.fumano.chess.Resetable;
 import de.fumano.chess.Vector2;
 import de.fumano.chess.move.Capture;
 import de.fumano.chess.move.Move;
@@ -88,11 +89,10 @@ public abstract class Piece {
         return this.allMoves;
     }
 
-
-    protected abstract List<Move> findAllMoves(Board board);
-
     @Override
     public String toString() {
         return color + "_" + this.getClass().getSimpleName();
     }
+
+    protected abstract List<Move> findAllMoves(Board board);
 }

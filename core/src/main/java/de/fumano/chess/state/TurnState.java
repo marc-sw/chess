@@ -72,4 +72,9 @@ public class TurnState extends State {
             renderer.useOnShapeRenderer(() -> renderer.highlightPiece(selectedPiece));
         }
     }
+
+    @Override
+    public void reset() {
+        this.selectedPiece = null;
+    }
 }

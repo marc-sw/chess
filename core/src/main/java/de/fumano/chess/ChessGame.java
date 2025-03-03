@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class ChessGame {
+public class ChessGame implements Resetable {
+
+    public static final int PLAYER_DURATION = 900;
 
     private final List<Move> movesMade;
     private final List<State> states;
@@ -26,19 +28,9 @@ public class ChessGame {
 
     public ChessGame() {
         this.board = new Board();
-        this.board.iterate(piece -> {
-            if (piece instanceof Pawn pawn) {
-                pawn.setChessGame(this);
-            }
-        });
-        this.activeColor = Color.WHITE;
         this.movesMade = new ArrayList<>();
-        this.whiteSecondsRemaining = 900;
-        this.blackSecondsRemaining = 900;
         this.states = List.of(new TurnState(this), new PromotionState(this), new EndState(this));
-        this.setActiveState(TurnState.class);
-        this.updateAllPieces();
-        this.filterPossibleMoves();
+        this.reset();
     }
 
     private void update(Consumer<Piece> consumer) {
@@ -70,6 +62,7 @@ public class ChessGame {
 
     private void updateAllPieces() {
         update((p -> p.updateMoves(board)));
+        filterPossibleMoves();
     }
 
     private void cacheUpdateAll() {
@@ -147,8 +140,6 @@ public class ChessGame {
         move.execute(this);
         this.movesMade.add(move);
         this.updateAllPieces();
-
-        filterPossibleMoves();
         boolean canMove = hasActiveSidePossibleMoves();
         if (getActiveKing().isInCheck() && !canMove) {
             //end and show checkmate
@@ -214,5 +205,18 @@ public class ChessGame {
 
     public void reset() {
         this.movesMade.clear();
+        this.board.reset();
+        this.states.forEach(State::reset);
+        this.activeColor = Color.WHITE;
+        this.setActiveState(TurnState.class);
+        this.whiteSecondsRemaining = PLAYER_DURATION;
+        this.blackSecondsRemaining = PLAYER_DURATION;
+
+        this.board.iterate(piece -> {
+            if (piece instanceof Pawn pawn) {
+                pawn.setChessGame(this);
+            }
+        });
+        this.updateAllPieces();
     }
 }

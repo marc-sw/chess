@@ -15,4 +15,5 @@ public abstract class State {
     public abstract void handleClick(Vector2 spot);
     public abstract void update(float secondsElapsed);
     public abstract void render(Renderer renderer);
+    public abstract void reset();
 }

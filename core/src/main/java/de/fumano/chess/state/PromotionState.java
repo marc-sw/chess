@@ -46,4 +46,9 @@ public class PromotionState extends State {
             renderer.renderTimers(this.chessGame.getWhiteSecondsRemaining(), this.chessGame.getBlackSecondsRemaining());
         });
     }
+
+    @Override
+    public void reset() {
+        promotionMoves = null;
+    }
 }

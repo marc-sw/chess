@@ -4,7 +4,7 @@ import de.fumano.chess.piece.*;
 
 import java.util.function.Consumer;
 
-public class Board {
+public class Board implements Resetable {
 
     public static final int SIZE = 8;
 
@@ -14,32 +14,9 @@ public class Board {
 
     public Board() {
         this.tiles = new Piece[SIZE][SIZE];
-
-        for (int i = 0; i < SIZE; i++) {
-            this.update(new Pawn(new Vector2(i, 1), Color.WHITE));
-            this.update(new Pawn(new Vector2(i, 6), Color.BLACK));
-        }
-
-        this.whiteKing = new King(new Vector2(4, 0), Color.WHITE);
-        this.blackKing = new King(new Vector2(4,7), Color.BLACK);
-        this.update(whiteKing);
-        this.update(blackKing);
-
-        this.update(new Rook(new Vector2(0, 0), Color.WHITE));
-        this.update(new Knight(new Vector2(1, 0), Color.WHITE));
-        this.update(new Bishop(new Vector2(2, 0), Color.WHITE));
-        this.update(new Queen(new Vector2(3, 0), Color.WHITE));
-        this.update(new Bishop(new Vector2(5,0 ), Color.WHITE));
-        this.update(new Knight(new Vector2(6, 0), Color.WHITE));
-        this.update(new Rook(new Vector2(7, 0), Color.WHITE));
-
-        this.update(new Rook(new Vector2(0, 7), Color.BLACK));
-        this.update(new Knight(new Vector2(1, 7), Color.BLACK));
-        this.update(new Bishop(new Vector2(2, 7), Color.BLACK));
-        this.update(new Queen(new Vector2(3, 7), Color.BLACK));
-        this.update(new Bishop(new Vector2(5, 7), Color.BLACK));
-        this.update(new Knight(new Vector2(6, 7), Color.BLACK));
-        this.update(new Rook(new Vector2(7, 7), Color.BLACK));
+        this.whiteKing = new King(new Vector2(), Color.WHITE);
+        this.blackKing = new King(new Vector2(), Color.BLACK);
+        this.reset();
     }
 
     public static boolean isWithin(int x, int y) {
@@ -113,5 +90,40 @@ public class Board {
 
     public King getBlackKing() {
         return blackKing;
+    }
+
+    @Override
+    public void reset() {
+        for (int y = 0; y < Board.SIZE; y++) {
+            for (int x = 0; x < Board.SIZE; x++) {
+                this.unsetSpot(x, y);
+            }
+        }
+
+        for (int i = 0; i < SIZE; i++) {
+            this.update(new Pawn(new Vector2(i, 1), Color.WHITE));
+            this.update(new Pawn(new Vector2(i, 6), Color.BLACK));
+        }
+
+        this.updatePiece(whiteKing, new Vector2(4, 0));
+        this.updatePiece(blackKing, new Vector2(4,7));
+        whiteKing.setMoved(false);
+        blackKing.setMoved(false);
+
+        this.update(new Rook(new Vector2(0, 0), Color.WHITE));
+        this.update(new Knight(new Vector2(1, 0), Color.WHITE));
+        this.update(new Bishop(new Vector2(2, 0), Color.WHITE));
+        this.update(new Queen(new Vector2(3, 0), Color.WHITE));
+        this.update(new Bishop(new Vector2(5,0 ), Color.WHITE));
+        this.update(new Knight(new Vector2(6, 0), Color.WHITE));
+        this.update(new Rook(new Vector2(7, 0), Color.WHITE));
+
+        this.update(new Rook(new Vector2(0, 7), Color.BLACK));
+        this.update(new Knight(new Vector2(1, 7), Color.BLACK));
+        this.update(new Bishop(new Vector2(2, 7), Color.BLACK));
+        this.update(new Queen(new Vector2(3, 7), Color.BLACK));
+        this.update(new Bishop(new Vector2(5, 7), Color.BLACK));
+        this.update(new Knight(new Vector2(6, 7), Color.BLACK));
+        this.update(new Rook(new Vector2(7, 7), Color.BLACK));
     }
 }

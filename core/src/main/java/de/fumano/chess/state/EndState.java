@@ -35,4 +35,9 @@ public class EndState extends State {
             renderer.renderTextAtCenter(this.message);
         });
     }
+
+    @Override
+    public void reset() {
+        this.message = "";
+    }
 }
