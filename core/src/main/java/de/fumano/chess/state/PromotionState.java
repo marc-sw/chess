@@ -1,6 +1,7 @@
 package de.fumano.chess.state;
 
 import de.fumano.chess.ChessGame;
+import de.fumano.chess.Color;
 import de.fumano.chess.Vector2;
 import de.fumano.chess.move.Promotion;
 import de.fumano.chess.Renderer;

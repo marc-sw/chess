@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Renderer {
 
@@ -30,6 +29,7 @@ public class Renderer {
     private final BitmapFont bitmapFont;
     private final BitmapFont bigFont;
     private final GlyphLayout glyphLayout;
+    private de.fumano.chess.Color perspective;
 
     public Renderer(Viewport viewport) {
         this.viewport = viewport;
@@ -68,12 +68,13 @@ public class Renderer {
             Texture texture = new Texture(fileHandle);
             Sprite sprite = new Sprite(texture);
             sprite.setSize(Chess.WORLD_SCALE, Chess.WORLD_SCALE);
+            sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 
             this.textures.add(texture);
             this.pieceSprites.put(fileHandle.nameWithoutExtension(), sprite);
         }
 
-        Texture boardTexture = new Texture("Chess/Wooden_2/Boards/3.png");
+        Texture boardTexture = new Texture("Chess/Wooden_2/Boards/4.png");
         boardSprite.setRegion(boardTexture);
         boardSprite.setSize(viewport.getWorldWidth(), viewport.getWorldHeight());
         this.textures.add(boardTexture);
@@ -132,6 +133,7 @@ public class Renderer {
         runnable.run();
         shapeRenderer.end();
     }
+
 
     public void dispose() {
         textures.forEach(Texture::dispose);

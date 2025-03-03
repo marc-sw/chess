@@ -2,9 +2,7 @@ package de.fumano.chess.piece;
 
 import de.fumano.chess.Board;
 import de.fumano.chess.Color;
-import de.fumano.chess.Resetable;
 import de.fumano.chess.Vector2;
-import de.fumano.chess.move.Capture;
 import de.fumano.chess.move.Move;
 
 import java.util.ArrayList;
@@ -36,20 +34,8 @@ public abstract class Piece {
         this.spot = spot;
     }
 
-    public boolean isAtTopOrBottom() {
-        return this.spot.y == 0 || this.spot.y == 7;
-    }
-
     public boolean hasMoved() {
         return this.moved;
-    }
-
-    public boolean isKing() {
-        return this instanceof King;
-    }
-
-    public boolean isPawn() {
-        return this instanceof Pawn;
     }
 
     public void setMoved(boolean moved) {
@@ -82,7 +68,7 @@ public abstract class Piece {
     }
 
     public boolean canCapture(Piece piece) {
-        return this.allMoves.stream().anyMatch(move -> move instanceof Capture capture && capture.capturedPiece.equals(piece));
+        return this.allMoves.stream().anyMatch(move -> move.getDestination().equals(piece.getSpot()));
     }
 
     public List<Move> getAllMoves() {

@@ -16,6 +16,7 @@ public class TurnState extends State {
 
     public TurnState(ChessGame chessGame) {
         super(chessGame);
+        this.reset();
     }
 
     private boolean isPieceSelected() {
