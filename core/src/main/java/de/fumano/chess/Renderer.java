@@ -34,16 +34,15 @@ public class Renderer {
     private final BitmapFont bitmapFont;
     private final BitmapFont bigFont;
     private final GlyphLayout glyphLayout;
-    private de.fumano.chess.Color perspective;
 
-    public Renderer(Viewport viewport) {
+    public Renderer(Viewport viewport, BitmapFont bitmapFont) {
         this.viewport = viewport;
         this.spriteBatch = new SpriteBatch();
         this.shapeRenderer = new ShapeRenderer();
         this.pieceSprites = new HashMap<>(12);
         this.textures = new ArrayList<>(13);
         this.boardSprite = new Sprite();
-        this.bitmapFont = new BitmapFont();
+        this.bitmapFont = bitmapFont;
         this.bigFont = new BitmapFont();
         this.bitmapFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         this.bitmapFont.getData().setScale(0.015f * Chess.WORLD_SCALE);
@@ -85,30 +84,30 @@ public class Renderer {
         this.textures.add(boardTexture);
     }
 
-    public void renderPiece(Piece piece, Vector2 spot) {
+    private void renderPiece(Piece piece, Vector2 spot) {
         Sprite sprite = pieceSprites.get(piece.toString());
         sprite.setPosition(spot.x * Chess.WORLD_SCALE + Chess.BOARD_OFFSET, spot.y * Chess.WORLD_SCALE + Chess.BOARD_OFFSET);
         sprite.draw(spriteBatch);
     }
 
-    public void renderPiece(Piece piece) {
+    private void renderPiece(Piece piece) {
         renderPiece(piece, piece.getSpot());
     }
 
-    public void renderTimers(int whiteSeconds, int blackSeconds) {
+    private void renderTimers(int whiteSeconds, int blackSeconds) {
         bitmapFont.draw(spriteBatch, "%02d:%02d".formatted(whiteSeconds / 60, whiteSeconds % 60), Chess.WHITE_TIMER_X, Chess.WHITE_TIMER_Y);
         bitmapFont.draw(spriteBatch, "%02d:%02d".formatted(blackSeconds / 60, blackSeconds % 60), Chess.BLACK_TIMER_X, Chess.BLACK_TIMER_Y);
     }
 
-    public void renderEmptyBoard() {
+    private void renderEmptyBoard() {
         boardSprite.draw(spriteBatch);
     }
 
-    public void renderPieces(Board board) {
+    private void renderPieces(Board board) {
         board.iterate(this::renderPiece);
     }
 
-    public void highlightPiece(Piece piece) {
+    private void highlightPiece(Piece piece) {
         shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.rect(piece.getSpot().x * Chess.WORLD_SCALE + Chess.BOARD_OFFSET,
             piece.getSpot().y * Chess.WORLD_SCALE + Chess.BOARD_OFFSET, Chess.WORLD_SCALE, Chess.WORLD_SCALE);
@@ -150,12 +149,12 @@ public class Renderer {
         });
     }
 
-    public void renderTextAtCenter(String text) {
+    private void renderTextAtCenter(String text) {
         glyphLayout.setText(bigFont, text);
         bigFont.draw(spriteBatch, glyphLayout, Chess.WORLD_CENTER - glyphLayout.width/2, Chess.WORLD_CENTER + glyphLayout.height/2);
     }
 
-    public void useOnSpriteBatch(Runnable runnable) {
+    private void useOnSpriteBatch(Runnable runnable) {
         viewport.apply();
         this.spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
         this.spriteBatch.begin();
@@ -163,7 +162,7 @@ public class Renderer {
         this.spriteBatch.end();
     }
 
-    public void useOnShapeRenderer(Runnable runnable) {
+    private void useOnShapeRenderer(Runnable runnable) {
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         runnable.run();
@@ -174,5 +173,7 @@ public class Renderer {
     public void dispose() {
         textures.forEach(Texture::dispose);
         spriteBatch.dispose();
+        shapeRenderer.dispose();
+        bigFont.dispose();
     }
 }

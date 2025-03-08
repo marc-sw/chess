@@ -94,9 +94,6 @@ public class ChessGame implements Resetable {
 
     public void update(float secondsElapsed) {
         if (this.over) {
-            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-                this.reset();
-            }
             return;
         }
         this.getActivePlayer().reduceTime(secondsElapsed);
