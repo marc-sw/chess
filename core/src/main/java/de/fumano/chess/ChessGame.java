@@ -1,10 +1,10 @@
 package de.fumano.chess;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import de.fumano.chess.movement.move.Move;
 import de.fumano.chess.movement.move.Step;
 import de.fumano.chess.piece.Pawn;
-import de.fumano.chess.player.ComputerPlayer;
-import de.fumano.chess.player.HumanPlayer;
 import de.fumano.chess.player.Player;
 
 import java.util.ArrayList;
@@ -19,13 +19,15 @@ public class ChessGame implements Resetable {
     private int activePlayerIndex;
     private boolean over;
 
-    public ChessGame() {
+    public ChessGame(Player white, Player black) {
         this.board = new Board();
-        this.players = List.of(new HumanPlayer(board, Color.WHITE), new HumanPlayer(board, Color.BLACK));
+        this.players = List.of(white, black);
         this.movesMade = new ArrayList<>();
         this.activePlayerIndex = 0;
-        this.getActivePlayer().updateLegalMoves(this);
         this.over = false;
+        white.init(board, Color.WHITE);
+        black.init(board, Color.BLACK);
+        this.getActivePlayer().updateLegalMoves(this);
     }
 
     public boolean isOver() {
@@ -92,6 +94,9 @@ public class ChessGame implements Resetable {
 
     public void update(float secondsElapsed) {
         if (this.over) {
+            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                this.reset();
+            }
             return;
         }
         this.getActivePlayer().reduceTime(secondsElapsed);
@@ -99,7 +104,7 @@ public class ChessGame implements Resetable {
             this.over = true;
             return;
         }
-        this.getActivePlayer().update(secondsElapsed);
+        this.getActivePlayer().update();
         Move move = this.getActivePlayer().get();
         if (move != null) {
             this.processMove(move);

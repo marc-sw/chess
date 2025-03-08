@@ -1,7 +1,6 @@
 package de.fumano.chess.player;
 
-import de.fumano.chess.Board;
-import de.fumano.chess.Color;
+import com.badlogic.gdx.Gdx;
 
 import java.util.Random;
 
@@ -11,15 +10,14 @@ public class ComputerPlayer extends Player {
     private final float turnCooldown;
     private float secondsPerTurn;
 
-    public ComputerPlayer(Board board, Color color, float turnCooldown) {
-        super(board, color);
+    public ComputerPlayer(float turnCooldown) {
         this.turnCooldown = turnCooldown;
         this.secondsPerTurn = turnCooldown;
     }
 
     @Override
-    public void update(float secondsElapsed) {
-        secondsPerTurn -= secondsElapsed;
+    public void update() {
+        secondsPerTurn -= Gdx.graphics.getDeltaTime();
         if (secondsPerTurn <= 0) {
             this.secondsPerTurn = turnCooldown;
             int i = random.nextInt(this.legalMoves.size());

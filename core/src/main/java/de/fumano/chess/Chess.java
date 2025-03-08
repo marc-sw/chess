@@ -6,8 +6,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import de.fumano.chess.player.ComputerPlayer;
 import de.fumano.chess.player.HumanPlayer;
-import de.fumano.chess.player.Player;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Chess extends ApplicationAdapter {
@@ -25,14 +25,12 @@ public class Chess extends ApplicationAdapter {
     private ChessGame chessGame;
     private Renderer renderer;
     private Viewport viewport;
-    private com.badlogic.gdx.math.Vector2 touchPos;
 
     @Override
     public void create() {
         this.viewport = new FitViewport(WORLD_SIZE, WORLD_SIZE);
         this.renderer = new Renderer(this.viewport);
-        this.touchPos = new com.badlogic.gdx.math.Vector2();
-        this.chessGame = new ChessGame();
+        this.chessGame = new ChessGame(new HumanPlayer(viewport), new ComputerPlayer(1f));
     }
 
     @Override
@@ -63,18 +61,6 @@ public class Chess extends ApplicationAdapter {
 
     private void handleInput() {
         handleBasicInputs();
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY());
-            viewport.unproject(touchPos);
-            touchPos.x -= BOARD_OFFSET;
-            touchPos.y -= BOARD_OFFSET;
-            Vector2 spot = new Vector2((int) touchPos.x/WORLD_SCALE, (int) touchPos.y/WORLD_SCALE);
-            if (touchPos.x >= 0 && touchPos.y >= 0 && touchPos.x < BOARD_SIZE && touchPos.y < BOARD_SIZE) {
-                if (chessGame.getActivePlayer() instanceof HumanPlayer player) {
-                    player.getState().handleClick(spot);
-                }
-            }
-        }
     }
 
     private void update(float secondsElapsed) {

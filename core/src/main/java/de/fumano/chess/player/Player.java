@@ -14,19 +14,22 @@ public abstract class Player implements Resetable, Supplier<Move> {
 
     private static final float START_SECONDS = 900;
 
-    protected final Board board;
+    protected Board board;
     protected final List<Move> legalMoves;
     protected King king;
-    protected final Color color;
+    protected Color color;
     protected float secondsRemaining;
     protected Move selectedMove;
 
-    public Player(Board board, Color color) {
-        this.board = board;
+    public Player() {
         this.legalMoves = new ArrayList<>();
-        this.king = (King) board.getPieceAt(4, color.equals(Color.WHITE) ? 0: 7);
-        this.color = color;
         this.secondsRemaining = Player.START_SECONDS;
+    }
+
+    public void init(Board board, Color color) {
+        this.color = color;
+        this.board = board;
+        this.king = (King) board.getPieceAt(4, color.equals(Color.WHITE) ? 0: 7);
     }
 
     public void setSelectedMove(Move move) {
@@ -88,7 +91,7 @@ public abstract class Player implements Resetable, Supplier<Move> {
         opponent.updateAllMoves(chessGame);
     }
 
-    public abstract void update(float secondsElapsed);
+    public abstract void update();
 
     public boolean canCapture(Vector2 destination) {
         return this.legalMoves.stream().anyMatch(move -> move.getDestination().equals(destination));
@@ -102,12 +105,12 @@ public abstract class Player implements Resetable, Supplier<Move> {
     public void reset() {
         this.secondsRemaining = Player.START_SECONDS;
         this.legalMoves.clear();
+        this.king = (King) board.getPieceAt(4, color.equals(Color.WHITE) ? 0: 7);
     }
 
     @Override
     public Move get() {
         Move move = this.selectedMove;
-        this.king = (King) board.getPieceAt(4, color.equals(Color.WHITE) ? 0: 7);
         this.selectedMove = null;
         return move;
     }
