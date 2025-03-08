@@ -1,9 +1,9 @@
 package de.fumano.chess.piece;
 
-import de.fumano.chess.Board;
+import de.fumano.chess.ChessGame;
 import de.fumano.chess.Color;
 import de.fumano.chess.Vector2;
-import de.fumano.chess.move.Move;
+import de.fumano.chess.movement.move.Move;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,17 +13,13 @@ public abstract class Piece {
     protected boolean moved;
     protected Vector2 spot;
     protected final Color color;
-    private final List<Move> allMoves;
-    private final List<Move> lastMoves;
-
+    private final List<Move> legalMoves;
 
     public Piece(Vector2 spot, Color color) {
         this.spot = spot;
-        this.allMoves = new ArrayList<>();
-        this.lastMoves = new ArrayList<>();
+        this.legalMoves = new ArrayList<>();
         this.moved = false;
         this.color = color;
-        //test asdas
     }
 
     public Vector2 getSpot() {
@@ -47,32 +43,19 @@ public abstract class Piece {
     }
 
     public boolean isOpponent(Piece other) {
-        return this.color != other.color;
+        return other != null && this.color != other.color;
     }
 
-    public void updateMoves(Board board) {
-        this.allMoves.clear();
-        this.allMoves.addAll(this.findAllMoves(board));
+    public boolean canCaptureSpot(Vector2 spot) {
+        return this.legalMoves.stream().anyMatch(move -> move.getDestination().equals(spot));
     }
 
-    public void cacheUpdateMoves(Board board) {
-        this.lastMoves.clear();
-        this.lastMoves.addAll(this.allMoves);
-        this.allMoves.clear();
-        this.allMoves.addAll(this.findAllMoves(board));
+    public boolean isPromotingPawn() {
+        return this instanceof Pawn pawn && pawn.promotesOnMove();
     }
 
-    public void revertUpdates() {
-        this.allMoves.clear();
-        this.allMoves.addAll(lastMoves);
-    }
-
-    public boolean canCapture(Piece piece) {
-        return this.allMoves.stream().anyMatch(move -> move.getDestination().equals(piece.getSpot()));
-    }
-
-    public List<Move> getAllMoves() {
-        return this.allMoves;
+    public List<Move> getLegalMoves() {
+        return this.legalMoves;
     }
 
     @Override
@@ -80,5 +63,5 @@ public abstract class Piece {
         return color + "_" + this.getClass().getSimpleName();
     }
 
-    protected abstract List<Move> findAllMoves(Board board);
+    public abstract List<Move> calculateAllMoves(ChessGame chessGame);
 }

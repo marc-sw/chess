@@ -6,15 +6,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import de.fumano.chess.player.HumanPlayer;
+import de.fumano.chess.player.Player;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Chess extends ApplicationAdapter {
-
-    /*
-    TODO: Check / Check Mate, regulating movement by check, castling by check...
-    TODO: Playing with timer...
-    TODO: Playing over the network
-     */
 
     public static final int WORLD_SCALE = 100;
     public static final int WORLD_SIZE = 9 * WORLD_SCALE;
@@ -74,17 +70,19 @@ public class Chess extends ApplicationAdapter {
             touchPos.y -= BOARD_OFFSET;
             Vector2 spot = new Vector2((int) touchPos.x/WORLD_SCALE, (int) touchPos.y/WORLD_SCALE);
             if (touchPos.x >= 0 && touchPos.y >= 0 && touchPos.x < BOARD_SIZE && touchPos.y < BOARD_SIZE) {
-                chessGame.getActiveState().handleClick(spot);
+                if (chessGame.getActivePlayer() instanceof HumanPlayer player) {
+                    player.getState().handleClick(spot);
+                }
             }
         }
     }
 
     private void update(float secondsElapsed) {
-        this.chessGame.getActiveState().update(secondsElapsed);
+        this.chessGame.update(secondsElapsed);
     }
 
     private void draw() {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        this.chessGame.getActiveState().render(renderer);
+        this.renderer.render(this.chessGame);
     }
 }

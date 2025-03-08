@@ -1,4 +1,4 @@
-package de.fumano.chess.move;
+package de.fumano.chess.movement.move;
 
 import de.fumano.chess.ChessGame;
 import de.fumano.chess.Vector2;
@@ -31,12 +31,10 @@ public class Step implements Move {
         movingPiece.setMoved(true);
         chessGame.getBoard().updatePiece(movingPiece, destination);
         chessGame.getBoard().unsetSpot(origin);
-        chessGame.switchColor();
     }
 
     @Override
     public void undo(ChessGame chessGame) {
-        chessGame.switchColor();
         this.movingPiece.setMoved(this.hasMoved);
         chessGame.getBoard().updatePiece(this.movingPiece, this.origin);
         chessGame.getBoard().unsetSpot(destination);
@@ -45,6 +43,11 @@ public class Step implements Move {
     @Override
     public Vector2 getDestination() {
         return destination;
+    }
+
+    @Override
+    public Piece getActor() {
+        return movingPiece;
     }
 
     @Override

@@ -1,8 +1,9 @@
-package de.fumano.chess.move;
+package de.fumano.chess.movement.move;
 
 import de.fumano.chess.ChessGame;
 import de.fumano.chess.Vector2;
 import de.fumano.chess.piece.King;
+import de.fumano.chess.piece.Piece;
 import de.fumano.chess.piece.Rook;
 
 import java.util.Objects;
@@ -40,7 +41,6 @@ public class Castling implements Move {
             chessGame.getBoard().updatePiece(king, new Vector2(6, y));
             chessGame.getBoard().updatePiece(rook, new Vector2(5, y));
         }
-        chessGame.switchColor();
     }
 
     @Override
@@ -50,20 +50,22 @@ public class Castling implements Move {
         int y = king.getSpot().y;
         chessGame.getBoard().unsetSpot(king.getSpot());
         chessGame.getBoard().unsetSpot(rook.getSpot());
-        chessGame.getBoard().updatePiece(king, new Vector2(4, y));
-
         if (king.getSpot().x == 2) {
             chessGame.getBoard().updatePiece(rook, new Vector2(0, y));
         } else {
             chessGame.getBoard().updatePiece(rook, new Vector2(7, y));
         }
-
-        chessGame.switchColor();
+        chessGame.getBoard().updatePiece(king, new Vector2(4, y));
     }
 
     @Override
     public Vector2 getDestination() {
         return rook.getSpot();
+    }
+
+    @Override
+    public Piece getActor() {
+        return king;
     }
 
     @Override

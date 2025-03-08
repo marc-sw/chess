@@ -1,8 +1,9 @@
-package de.fumano.chess.move;
+package de.fumano.chess.movement.move;
 
 import de.fumano.chess.ChessGame;
 import de.fumano.chess.Vector2;
 import de.fumano.chess.piece.Pawn;
+import de.fumano.chess.piece.Piece;
 
 import java.util.Objects;
 
@@ -25,7 +26,6 @@ public class EnPassant implements Move {
         chessGame.getBoard().updatePiece(capturingPawn, destination);
         chessGame.getBoard().unsetSpot(capturingPawnSpot);
         chessGame.getBoard().unsetSpot(capturedPawn.getSpot());
-        chessGame.switchColor();
     }
 
     @Override
@@ -33,12 +33,16 @@ public class EnPassant implements Move {
         chessGame.getBoard().unsetSpot(capturingPawn.getSpot());
         chessGame.getBoard().updatePiece(capturingPawn, capturingPawnSpot);
         chessGame.getBoard().updatePiece(capturedPawn);
-        chessGame.switchColor();
     }
 
     @Override
     public Vector2 getDestination() {
         return destination;
+    }
+
+    @Override
+    public Piece getActor() {
+        return capturingPawn;
     }
 
     @Override

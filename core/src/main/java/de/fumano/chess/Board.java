@@ -1,7 +1,10 @@
 package de.fumano.chess;
 
+import de.fumano.chess.movement.move.Move;
 import de.fumano.chess.piece.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class Board implements Resetable {
@@ -9,13 +12,9 @@ public class Board implements Resetable {
     public static final int SIZE = 8;
 
     private final Piece[][] tiles;
-    private final King whiteKing;
-    private final King blackKing;
 
     public Board() {
         this.tiles = new Piece[SIZE][SIZE];
-        this.whiteKing = new King(new Vector2(), Color.WHITE);
-        this.blackKing = new King(new Vector2(), Color.BLACK);
         this.reset();
     }
 
@@ -84,12 +83,18 @@ public class Board implements Resetable {
         }
     }
 
-    public King getWhiteKing() {
-        return whiteKing;
+    public boolean isOccupied(int x, int y) {
+        return getPieceAt(x, y) != null;
     }
 
-    public King getBlackKing() {
-        return blackKing;
+    public List<Piece> findPieces(Color color) {
+        List<Piece> pieces = new ArrayList<>(16);
+        this.iterate(p -> {
+            if (p.getColor().equals(color)) {
+                pieces.add(p);
+            }
+        });
+        return pieces;
     }
 
     @Override
@@ -105,10 +110,8 @@ public class Board implements Resetable {
             this.update(new Pawn(new Vector2(i, 6), Color.BLACK));
         }
 
-        this.updatePiece(whiteKing, new Vector2(4, 0));
-        this.updatePiece(blackKing, new Vector2(4,7));
-        whiteKing.setMoved(false);
-        blackKing.setMoved(false);
+        this.update(new King(new Vector2(4, 0), Color.WHITE));
+        this.update(new King(new Vector2(4, 7), Color.BLACK));
 
         this.update(new Rook(new Vector2(0, 0), Color.WHITE));
         this.update(new Knight(new Vector2(1, 0), Color.WHITE));

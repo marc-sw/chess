@@ -4,6 +4,8 @@ import java.util.Objects;
 
 public class Vector2 {
 
+    public static final Vector2 ZERO = new Vector2();
+
     public final int x;
     public final int y;
 
@@ -32,8 +34,8 @@ public class Vector2 {
         return new Vector2(this.x + other.x, this.y + other.y);
     }
 
-    public Vector2 add(Direction direction) {
-        return this.add(direction.offset);
+    public Vector2 add(Vector2 other, int times) {
+        return new Vector2(this.x + other.x * times, this.y + other.y * times);
     }
 
     @Override

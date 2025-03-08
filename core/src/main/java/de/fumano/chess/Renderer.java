@@ -10,13 +10,18 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import de.fumano.chess.move.Move;
+import de.fumano.chess.movement.move.Move;
 import de.fumano.chess.piece.Piece;
+import de.fumano.chess.player.HumanPlayer;
+import de.fumano.chess.state.PromotionState;
+import de.fumano.chess.state.TurnState;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import static de.fumano.chess.state.PromotionState.firstSpot;
 
 public class Renderer {
 
@@ -108,10 +113,41 @@ public class Renderer {
         shapeRenderer.rect(piece.getSpot().x * Chess.WORLD_SCALE + Chess.BOARD_OFFSET,
             piece.getSpot().y * Chess.WORLD_SCALE + Chess.BOARD_OFFSET, Chess.WORLD_SCALE, Chess.WORLD_SCALE);
         shapeRenderer.setColor(Color.GREEN);
-        for (Move move: piece.getAllMoves()) {
+        for (Move move: piece.getLegalMoves()) {
             shapeRenderer.rect(move.getDestination().x * Chess.WORLD_SCALE + Chess.BOARD_OFFSET,
                 move.getDestination().y * Chess.WORLD_SCALE + Chess.BOARD_OFFSET, Chess.WORLD_SCALE, Chess.WORLD_SCALE);
         }
+    }
+
+    public void render(ChessGame chessGame) {
+        useOnSpriteBatch(() -> {
+            this.renderEmptyBoard();
+            this.renderTimers(
+                (int) chessGame.getWhitePlayer().getSecondsRemaining(),
+                (int) chessGame.getBlackPlayer().getSecondsRemaining());
+
+
+            if (chessGame.getActivePlayer() instanceof HumanPlayer humanPlayer && humanPlayer.getState() instanceof PromotionState state) {
+                for (int i = 0; i < state.getPromotionMoves().size(); i++) {
+                    this.renderPiece(state.getPromotionMoves().get(i).promotedPiece, new Vector2(firstSpot.x + i, firstSpot.y));
+                }
+            } else {
+                this.renderPieces(chessGame.getBoard());
+                if (chessGame.isOver()) {
+                    this.renderTextAtCenter("game over");
+                }
+            }
+        });
+
+        useOnShapeRenderer(() -> {
+            if (chessGame.getActivePlayer() instanceof HumanPlayer humanPlayer) {
+                if (humanPlayer.getState() instanceof TurnState turnState) {
+                    if (turnState.isPieceSelected()) {
+                        this.highlightPiece(turnState.getSelectedPiece());
+                    }
+                }
+            }
+        });
     }
 
     public void renderTextAtCenter(String text) {

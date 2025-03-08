@@ -1,9 +1,8 @@
-package de.fumano.chess.move;
+package de.fumano.chess.movement.move;
 
 import de.fumano.chess.ChessGame;
 import de.fumano.chess.Vector2;
 import de.fumano.chess.piece.Piece;
-import de.fumano.chess.state.PromotionState;
 
 import java.util.Objects;
 
@@ -34,7 +33,6 @@ public class Capture implements Move {
         capturingPiece.setMoved(true);
         chessGame.getBoard().updatePiece(capturingPiece, capturedPiece.getSpot());
         chessGame.getBoard().unsetSpot(this.capturingPieceSpot);
-        chessGame.switchColor();
     }
 
     @Override
@@ -42,12 +40,16 @@ public class Capture implements Move {
         this.capturingPiece.setMoved(this.capturingPieceMoved);
         chessGame.getBoard().updatePiece(capturingPiece, this.capturingPieceSpot);
         chessGame.getBoard().updatePiece(capturedPiece);
-        chessGame.switchColor();
     }
 
     @Override
     public Vector2 getDestination() {
         return capturedPiece.getSpot();
+    }
+
+    @Override
+    public Piece getActor() {
+        return capturingPiece;
     }
 
     @Override

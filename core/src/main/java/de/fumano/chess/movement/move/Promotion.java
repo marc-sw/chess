@@ -1,10 +1,11 @@
-package de.fumano.chess.move;
+package de.fumano.chess.movement.move;
 
 import de.fumano.chess.ChessGame;
+import de.fumano.chess.Color;
 import de.fumano.chess.Vector2;
-import de.fumano.chess.piece.Pawn;
-import de.fumano.chess.piece.Piece;
+import de.fumano.chess.piece.*;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Promotion implements Move {
@@ -22,15 +23,10 @@ public class Promotion implements Move {
             promotingPawn.getSpot().addY(promotingPawn.getDirection()) : optionalCapturedPiece.getSpot();
     }
 
-    public Promotion(Pawn promotingPawn, Piece promotedPiece) {
-        this(promotingPawn, promotedPiece, null);
-    }
-
     @Override
     public void execute(ChessGame chessGame) {
         chessGame.getBoard().updatePiece(promotedPiece, getDestination());
         chessGame.getBoard().unsetSpot(promotingPawn.getSpot());
-        chessGame.switchColor();
     }
 
     @Override
@@ -41,12 +37,16 @@ public class Promotion implements Move {
         } else {
             chessGame.getBoard().updatePiece(optionalCapturedPiece);
         }
-        chessGame.switchColor();
     }
 
     @Override
     public Vector2 getDestination() {
         return destination;
+    }
+
+    @Override
+    public Piece getActor() {
+        return promotingPawn;
     }
 
     @Override
@@ -60,5 +60,13 @@ public class Promotion implements Move {
     @Override
     public int hashCode() {
         return Objects.hash(destination, optionalCapturedPiece, promotingPawn, promotedPiece);
+    }
+
+    public static void addMoves(Pawn promotingPawn, Piece optionalCapturedPiece, List<Move> moves) {
+        Color color = promotingPawn.getColor();
+        moves.add(new Promotion(promotingPawn, new Rook(Vector2.ZERO, color), optionalCapturedPiece));
+        moves.add(new Promotion(promotingPawn, new Knight(Vector2.ZERO, color), optionalCapturedPiece));
+        moves.add(new Promotion(promotingPawn, new Bishop(Vector2.ZERO, color), optionalCapturedPiece));
+        moves.add(new Promotion(promotingPawn, new Queen(Vector2.ZERO, color), optionalCapturedPiece));
     }
 }
