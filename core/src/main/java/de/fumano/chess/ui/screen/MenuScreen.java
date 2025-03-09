@@ -23,11 +23,13 @@ public class MenuScreen implements Screen {
         style.font = chess.getBitmapFont();
         TextButton freePlay = new TextButton("Free Play", style);
         TextButton againstComputer = new TextButton("Play vs. Computer", style);
+        TextButton computerBattle = new TextButton("Computer Battle", style);
         Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
-        table.add(freePlay).center().width(300).height(50);
-        table.add(againstComputer).center().width(300).height(50);
+        table.add(freePlay).center().width(200).height(50);
+        table.add(againstComputer).center().width(200).height(50);
+        table.add(computerBattle).center().width(200).height(50);
 
         freePlay.addListener(new ChangeListener() {
             @Override
@@ -42,6 +44,15 @@ public class MenuScreen implements Screen {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 chess.setScreen(new GameScreen(chess, new ChessGame(new HumanPlayer(chess.getViewport()), new ComputerPlayer(1f))));
+                dispose();
+            }
+        });
+
+        computerBattle.addListener(new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                chess.setScreen(new GameScreen(chess, new ChessGame(new ComputerPlayer(0.5f), new ComputerPlayer(0.5f))));
                 dispose();
             }
         });
