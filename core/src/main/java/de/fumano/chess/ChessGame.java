@@ -1,10 +1,9 @@
 package de.fumano.chess;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import de.fumano.chess.movement.move.Move;
 import de.fumano.chess.movement.move.Step;
 import de.fumano.chess.piece.Pawn;
+import de.fumano.chess.player.MoveStrategy;
 import de.fumano.chess.player.Player;
 
 import java.util.ArrayList;
@@ -19,14 +18,12 @@ public class ChessGame implements Resetable {
     private int activePlayerIndex;
     private boolean over;
 
-    public ChessGame(Player white, Player black) {
+    public ChessGame(MoveStrategy whiteStrategy, MoveStrategy blackStrategy) {
         this.board = new Board();
-        this.players = List.of(white, black);
+        this.players = List.of(new Player(board, Color.WHITE, whiteStrategy), new Player(board, Color.BLACK, blackStrategy));
         this.movesMade = new ArrayList<>();
         this.activePlayerIndex = 0;
         this.over = false;
-        white.init(board, Color.WHITE);
-        black.init(board, Color.BLACK);
         this.getActivePlayer().updateLegalMoves(this);
     }
 
@@ -105,8 +102,7 @@ public class ChessGame implements Resetable {
             this.over = true;
             return;
         }
-        this.getActivePlayer().update();
-        Move move = this.getActivePlayer().get();
+        Move move = this.getActivePlayer().selectMove();
         if (move != null) {
             this.processMove(move);
         }

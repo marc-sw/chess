@@ -22,6 +22,9 @@ public class Chess extends Game {
     public static final float BLACK_TIMER_X = 8.3f * WORLD_SCALE;
     public static final float BLACK_TIMER_Y = 8.83f * WORLD_SCALE;
 
+    public static final float ANIMATION_SECONDS = 0.35f;
+    public static final float COMPUTER_TURN_SECONDS = 0.5f;
+
     private Renderer renderer;
     private Viewport viewport;
     private BitmapFont bitmapFont;
@@ -42,7 +45,7 @@ public class Chess extends Game {
     public void create() {
         this.viewport = new FitViewport(WORLD_SIZE, WORLD_SIZE);
         this.bitmapFont = new BitmapFont();
-        this.renderer = new AnimatedRenderer(new StaticRenderer(this.viewport, bitmapFont), 0.25f);
+        this.renderer = new AnimatedRenderer(new StaticRenderer(this.viewport, bitmapFont), ANIMATION_SECONDS);
 
         this.setScreen(new MenuScreen(this));
     }

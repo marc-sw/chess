@@ -1,20 +1,21 @@
 package de.fumano.chess.ui.state;
 
 import de.fumano.chess.Vector2;
+import de.fumano.chess.movement.move.Move;
 import de.fumano.chess.movement.move.Promotion;
-import de.fumano.chess.player.HumanPlayer;
+import de.fumano.chess.player.ClickStrategy;
 
 import java.util.List;
 
-public class PromotionState implements State {
+public class PromotionState implements ClickState {
 
     public static final Vector2 firstSpot = new Vector2(2, 3);
 
-    private final HumanPlayer player;
+    private final ClickStrategy strategy;
     private final List<Promotion> promotionMoves;
 
-    public PromotionState(HumanPlayer player, List<Promotion> promotionMoves) {
-        this.player = player;
+    public PromotionState(ClickStrategy strategy, List<Promotion> promotionMoves) {
+        this.strategy = strategy;
         this.promotionMoves = promotionMoves;
     }
 
@@ -23,13 +24,13 @@ public class PromotionState implements State {
     }
 
     @Override
-    public void handleClick(Vector2 spot) {
+    public Move selectMove(Vector2 clickedTile, List<Move> moves) {
         for (int i = 0; i < promotionMoves.size(); i++) {
-            if (spot.x == firstSpot.x + i && spot.y == firstSpot.y) {
-                this.player.setSelectedMove(promotionMoves.get(i));
-                this.player.setState(new TurnState(this.player));
-                break;
+            if (clickedTile.x == firstSpot.x + i && clickedTile.y == firstSpot.y) {
+                this.strategy.setClickState(new TurnState(this.strategy));
+                return promotionMoves.get(i);
             }
         }
+        return null;
     }
 }

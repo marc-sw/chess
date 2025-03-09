@@ -1,17 +1,17 @@
 package de.fumano.chess.ui.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.fumano.chess.Chess;
 import de.fumano.chess.ChessGame;
-import de.fumano.chess.player.ComputerPlayer;
-import de.fumano.chess.player.HumanPlayer;
+import de.fumano.chess.player.ClickStrategy;
+import de.fumano.chess.player.RandomStrategy;
+import de.fumano.chess.ui.components.GamemodeFactory;
 
 public class MenuScreen implements Screen {
 
@@ -21,52 +21,39 @@ public class MenuScreen implements Screen {
         this.stage = new Stage(chess.getViewport());
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
         style.font = chess.getBitmapFont();
-        TextButton freePlay = new TextButton("Free Play", style);
-        TextButton againstComputer = new TextButton("Play vs. Computer", style);
-        TextButton computerBattle = new TextButton("Computer Battle", style);
         Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
-        table.add(freePlay).center().width(200).height(50);
-        table.add(againstComputer).center().width(200).height(50);
-        table.add(computerBattle).center().width(200).height(50);
-
-        freePlay.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                chess.setScreen(new GameScreen(chess, new ChessGame(new HumanPlayer(chess.getViewport()), new HumanPlayer(chess.getViewport()))));
-                dispose();
-            }
-        });
-
-        againstComputer.addListener(new ChangeListener() {
-
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                chess.setScreen(new GameScreen(chess, new ChessGame(new HumanPlayer(chess.getViewport()), new ComputerPlayer(1f))));
-                dispose();
-            }
-        });
-
-        computerBattle.addListener(new ChangeListener() {
-
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                chess.setScreen(new GameScreen(chess, new ChessGame(new ComputerPlayer(0.5f), new ComputerPlayer(0.5f))));
-                dispose();
-            }
-        });
+        GamemodeFactory factory = new GamemodeFactory(table, chess, style);
+        factory.createButton(
+            () -> new ChessGame(new ClickStrategy(chess.getViewport()), new ClickStrategy(chess.getViewport())),
+            "PvP"
+            );
+        factory.createButton(
+            () -> new ChessGame(new ClickStrategy(chess.getViewport()), new RandomStrategy(Chess.COMPUTER_TURN_SECONDS)),
+            "PvE"
+        );
+        factory.createButton(
+            () -> new ChessGame(new RandomStrategy(Chess.COMPUTER_TURN_SECONDS), new RandomStrategy(Chess.COMPUTER_TURN_SECONDS)),
+            "EvE"
+        );
 
         Gdx.input.setInputProcessor(this.stage);
     }
 
+    private void update() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Gdx.app.exit();
+        }
+    }
+
     @Override
     public void show() {
-
     }
 
     @Override
     public void render(float delta) {
+        update();
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         stage.act(delta);
         this.stage.draw();

@@ -5,7 +5,7 @@ import de.fumano.chess.ChessGame;
 import de.fumano.chess.Vector2;
 import de.fumano.chess.movement.move.*;
 import de.fumano.chess.piece.Piece;
-import de.fumano.chess.player.HumanPlayer;
+import de.fumano.chess.player.ClickStrategy;
 import de.fumano.chess.ui.state.PromotionState;
 import de.fumano.chess.ui.state.TurnState;
 
@@ -38,7 +38,7 @@ public class AnimatedRenderer implements Renderer {
                 (int) chessGame.getBlackPlayer().getSecondsRemaining());
 
 
-            if (chessGame.getActivePlayer() instanceof HumanPlayer humanPlayer && humanPlayer.getState() instanceof PromotionState state) {
+            if (chessGame.getActivePlayer().getMoveStrategy() instanceof ClickStrategy strategy && strategy.getClickState() instanceof PromotionState state) {
                 for (int i = 0; i < state.getPromotionMoves().size(); i++) {
                     this.staticRenderer.renderPiece(state.getPromotionMoves().get(i).promotedPiece, new Vector2(firstSpot.x + i, firstSpot.y));
                 }
@@ -58,8 +58,8 @@ public class AnimatedRenderer implements Renderer {
         });
 
         this.staticRenderer.useOnShapeRenderer(() -> {
-            if (chessGame.getActivePlayer() instanceof HumanPlayer humanPlayer) {
-                if (humanPlayer.getState() instanceof TurnState turnState) {
+            if (chessGame.getActivePlayer().getMoveStrategy() instanceof ClickStrategy strategy) {
+                if (strategy.getClickState() instanceof TurnState turnState) {
                     if (turnState.isPieceSelected()) {
                         this.staticRenderer.highlightPiece(turnState.getSelectedPiece());
                     }
@@ -139,7 +139,9 @@ public class AnimatedRenderer implements Renderer {
     }
 
     private void update(ChessGame chessGame) {
-        if (chessGame.getMovesMade().size() > this.nextMoveIndex) {
+        if (chessGame.getMovesMade().size() < this.nextMoveIndex) {
+            this.nextMoveIndex = chessGame.getMovesMade().size();
+        } else if (chessGame.getMovesMade().size() > this.nextMoveIndex) {
             this.add(chessGame.getMovesMade().getLast());
             this.nextMoveIndex++;
         }

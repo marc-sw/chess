@@ -8,9 +8,8 @@ import de.fumano.chess.piece.Piece;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Supplier;
 
-public abstract class Player implements Resetable, Supplier<Move> {
+public class Player implements Resetable {
 
     private static final float START_SECONDS = 900;
 
@@ -19,21 +18,15 @@ public abstract class Player implements Resetable, Supplier<Move> {
     protected King king;
     protected Color color;
     protected float secondsRemaining;
-    protected Move selectedMove;
+    private final MoveStrategy moveStrategy;
 
-    public Player() {
-        this.legalMoves = new ArrayList<>();
-        this.secondsRemaining = Player.START_SECONDS;
-    }
-
-    public void init(Board board, Color color) {
+    public Player(Board board, Color color, MoveStrategy moveStrategy) {
         this.color = color;
         this.board = board;
         this.king = (King) board.getPieceAt(4, color.equals(Color.WHITE) ? 0: 7);
-    }
-
-    public void setSelectedMove(Move move) {
-        this.selectedMove = move;
+        this.moveStrategy = moveStrategy;
+        this.legalMoves = new ArrayList<>();
+        this.secondsRemaining = Player.START_SECONDS;
     }
 
     public void reduceTime(float secondsElapsed) {
@@ -46,6 +39,10 @@ public abstract class Player implements Resetable, Supplier<Move> {
 
     public Color getColor() {
         return color;
+    }
+
+    public MoveStrategy getMoveStrategy() {
+        return moveStrategy;
     }
 
     public Board getBoard() {
@@ -91,8 +88,6 @@ public abstract class Player implements Resetable, Supplier<Move> {
         opponent.updateAllMoves(chessGame);
     }
 
-    public abstract void update();
-
     public boolean canCapture(Vector2 destination) {
         return this.legalMoves.stream().anyMatch(move -> move.getDestination().equals(destination));
     }
@@ -105,13 +100,11 @@ public abstract class Player implements Resetable, Supplier<Move> {
     public void reset() {
         this.secondsRemaining = Player.START_SECONDS;
         this.legalMoves.clear();
+        this.moveStrategy.reset();
         this.king = (King) board.getPieceAt(4, color.equals(Color.WHITE) ? 0: 7);
     }
 
-    @Override
-    public Move get() {
-        Move move = this.selectedMove;
-        this.selectedMove = null;
-        return move;
+    public Move selectMove() {
+        return moveStrategy.selectMove(this.legalMoves);
     }
 }

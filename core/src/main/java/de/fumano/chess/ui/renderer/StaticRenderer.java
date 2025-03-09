@@ -16,7 +16,7 @@ import de.fumano.chess.ChessGame;
 import de.fumano.chess.Vector2;
 import de.fumano.chess.movement.move.Move;
 import de.fumano.chess.piece.Piece;
-import de.fumano.chess.player.HumanPlayer;
+import de.fumano.chess.player.ClickStrategy;
 import de.fumano.chess.ui.state.PromotionState;
 import de.fumano.chess.ui.state.TurnState;
 
@@ -134,7 +134,7 @@ public class StaticRenderer implements Renderer {
                 (int) chessGame.getBlackPlayer().getSecondsRemaining());
 
 
-            if (chessGame.getActivePlayer() instanceof HumanPlayer humanPlayer && humanPlayer.getState() instanceof PromotionState state) {
+            if (chessGame.getActivePlayer().getMoveStrategy() instanceof ClickStrategy strategy && strategy.getClickState() instanceof PromotionState state) {
                 for (int i = 0; i < state.getPromotionMoves().size(); i++) {
                     this.renderPiece(state.getPromotionMoves().get(i).promotedPiece, new Vector2(firstSpot.x + i, firstSpot.y));
                 }
@@ -147,8 +147,8 @@ public class StaticRenderer implements Renderer {
         });
 
         useOnShapeRenderer(() -> {
-            if (chessGame.getActivePlayer() instanceof HumanPlayer humanPlayer) {
-                if (humanPlayer.getState() instanceof TurnState turnState) {
+            if (chessGame.getActivePlayer().getMoveStrategy() instanceof ClickStrategy strategy) {
+                if (strategy.getClickState() instanceof TurnState turnState) {
                     if (turnState.isPieceSelected()) {
                         this.highlightPiece(turnState.getSelectedPiece());
                     }

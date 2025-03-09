@@ -18,7 +18,7 @@ public class GameScreen implements Screen {
     }
 
     private void input() {
-        if (this.chessGame.isOver() && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || this.chessGame.isOver() && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             chess.setScreen(new MenuScreen(chess));
             dispose();
         }
