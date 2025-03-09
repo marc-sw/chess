@@ -7,6 +7,7 @@ import de.fumano.chess.movement.move.Move;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class Piece {
 
@@ -64,4 +65,17 @@ public abstract class Piece {
     }
 
     public abstract List<Move> calculateAllMoves(ChessGame chessGame);
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Piece piece = (Piece) o;
+        return moved == piece.moved && Objects.equals(spot, piece.spot) && color == piece.color && Objects.equals(legalMoves, piece.legalMoves);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(moved, spot, color, legalMoves);
+    }
 }

@@ -18,13 +18,13 @@ public class CastlingRule implements Rule {
             return;
         }
         Piece target = context.getBoard().getPieceAt(destination);
-        if (!(target instanceof Rook)|| target.hasMoved() || actor.isOpponent(target)) {
+        if (!(target instanceof Rook)|| target.hasMoved() || actor.isOpponent(target) || context.getOpponentPlayer().canCapture(actor.getSpot())) {
             return;
         }
 
         int horizontalDirection = destination.x - actor.getSpot().x;
         horizontalDirection /= Math.abs(horizontalDirection);
-        for (int i = actor.getSpot().x; i != destination.x; i += horizontalDirection) {
+        for (int i = actor.getSpot().x + horizontalDirection; i != destination.x; i += horizontalDirection) {
             if (context.getBoard().isOccupied(i, actor.getSpot().y) ||
                 context.getOpponentPlayer().canCapture(new Vector2(i, actor.getSpot().y))) {
                 return;

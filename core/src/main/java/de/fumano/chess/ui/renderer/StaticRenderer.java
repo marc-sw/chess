@@ -1,4 +1,4 @@
-package de.fumano.chess;
+package de.fumano.chess.ui.renderer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -10,20 +10,24 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import de.fumano.chess.Board;
+import de.fumano.chess.Chess;
+import de.fumano.chess.ChessGame;
+import de.fumano.chess.Vector2;
 import de.fumano.chess.movement.move.Move;
 import de.fumano.chess.piece.Piece;
 import de.fumano.chess.player.HumanPlayer;
-import de.fumano.chess.state.PromotionState;
-import de.fumano.chess.state.TurnState;
+import de.fumano.chess.ui.state.PromotionState;
+import de.fumano.chess.ui.state.TurnState;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import static de.fumano.chess.state.PromotionState.firstSpot;
+import static de.fumano.chess.ui.state.PromotionState.firstSpot;
 
-public class Renderer {
+public class StaticRenderer implements Renderer {
 
     private final Sprite boardSprite;
     private final List<Texture> textures;
@@ -35,7 +39,7 @@ public class Renderer {
     private final BitmapFont bigFont;
     private final GlyphLayout glyphLayout;
 
-    public Renderer(Viewport viewport, BitmapFont bitmapFont) {
+    public StaticRenderer(Viewport viewport, BitmapFont bitmapFont) {
         this.viewport = viewport;
         this.spriteBatch = new SpriteBatch();
         this.shapeRenderer = new ShapeRenderer();
@@ -84,30 +88,34 @@ public class Renderer {
         this.textures.add(boardTexture);
     }
 
-    private void renderPiece(Piece piece, Vector2 spot) {
+    public void renderPiece(Piece piece, float tileX, float tileY) {
         Sprite sprite = pieceSprites.get(piece.toString());
-        sprite.setPosition(spot.x * Chess.WORLD_SCALE + Chess.BOARD_OFFSET, spot.y * Chess.WORLD_SCALE + Chess.BOARD_OFFSET);
+        sprite.setPosition(tileX * Chess.WORLD_SCALE + Chess.BOARD_OFFSET, tileY * Chess.WORLD_SCALE + Chess.BOARD_OFFSET);
         sprite.draw(spriteBatch);
     }
 
-    private void renderPiece(Piece piece) {
+    public void renderPiece(Piece piece, Vector2 spot) {
+        renderPiece(piece, spot.x, spot.y);
+    }
+
+    public void renderPiece(Piece piece) {
         renderPiece(piece, piece.getSpot());
     }
 
-    private void renderTimers(int whiteSeconds, int blackSeconds) {
+    public void renderTimers(int whiteSeconds, int blackSeconds) {
         bitmapFont.draw(spriteBatch, "%02d:%02d".formatted(whiteSeconds / 60, whiteSeconds % 60), Chess.WHITE_TIMER_X, Chess.WHITE_TIMER_Y);
         bitmapFont.draw(spriteBatch, "%02d:%02d".formatted(blackSeconds / 60, blackSeconds % 60), Chess.BLACK_TIMER_X, Chess.BLACK_TIMER_Y);
     }
 
-    private void renderEmptyBoard() {
+    public void renderEmptyBoard() {
         boardSprite.draw(spriteBatch);
     }
 
-    private void renderPieces(Board board) {
+    public void renderPieces(Board board) {
         board.iterate(this::renderPiece);
     }
 
-    private void highlightPiece(Piece piece) {
+    public void highlightPiece(Piece piece) {
         shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.rect(piece.getSpot().x * Chess.WORLD_SCALE + Chess.BOARD_OFFSET,
             piece.getSpot().y * Chess.WORLD_SCALE + Chess.BOARD_OFFSET, Chess.WORLD_SCALE, Chess.WORLD_SCALE);
@@ -149,12 +157,12 @@ public class Renderer {
         });
     }
 
-    private void renderTextAtCenter(String text) {
+    public void renderTextAtCenter(String text) {
         glyphLayout.setText(bigFont, text);
         bigFont.draw(spriteBatch, glyphLayout, Chess.WORLD_CENTER - glyphLayout.width/2, Chess.WORLD_CENTER + glyphLayout.height/2);
     }
 
-    private void useOnSpriteBatch(Runnable runnable) {
+    public void useOnSpriteBatch(Runnable runnable) {
         viewport.apply();
         this.spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
         this.spriteBatch.begin();
@@ -162,7 +170,7 @@ public class Renderer {
         this.spriteBatch.end();
     }
 
-    private void useOnShapeRenderer(Runnable runnable) {
+    public void useOnShapeRenderer(Runnable runnable) {
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         runnable.run();

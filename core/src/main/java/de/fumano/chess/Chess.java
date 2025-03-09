@@ -4,7 +4,10 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import de.fumano.chess.screen.MenuScreen;
+import de.fumano.chess.ui.renderer.AnimatedRenderer;
+import de.fumano.chess.ui.renderer.Renderer;
+import de.fumano.chess.ui.screen.MenuScreen;
+import de.fumano.chess.ui.renderer.StaticRenderer;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Chess extends Game {
@@ -39,7 +42,7 @@ public class Chess extends Game {
     public void create() {
         this.viewport = new FitViewport(WORLD_SIZE, WORLD_SIZE);
         this.bitmapFont = new BitmapFont();
-        this.renderer = new Renderer(this.viewport, bitmapFont);
+        this.renderer = new AnimatedRenderer(new StaticRenderer(this.viewport, bitmapFont), 0.25f);
 
         this.setScreen(new MenuScreen(this));
     }

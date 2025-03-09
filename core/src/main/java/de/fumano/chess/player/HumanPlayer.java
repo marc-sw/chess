@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.fumano.chess.Vector2;
-import de.fumano.chess.state.State;
-import de.fumano.chess.state.TurnState;
+import de.fumano.chess.ui.state.State;
+import de.fumano.chess.ui.state.TurnState;
 
 import static de.fumano.chess.Chess.*;
 

@@ -10,12 +10,20 @@ import java.util.Objects;
 
 public class Castling implements Move {
 
+    public final Vector2 rookOrigin;
+    public final Vector2 kingOrigin;
+    public final Vector2 rookDestination;
+    public final Vector2 kingDestination;
     public final King king;
     public final Rook rook;
 
     public Castling(King king, Rook rook) {
         this.king = king;
         this.rook = rook;
+        this.rookOrigin = rook.getSpot();
+        this.kingOrigin = king.getSpot();
+        this.rookDestination = new Vector2(rook.getSpot().x == 0 ? 3: 5, king.getSpot().y);
+        this.kingDestination = new Vector2(rook.getSpot().x == 0 ? 2: 6, king.getSpot().y);
     }
 
     /*
@@ -30,37 +38,25 @@ public class Castling implements Move {
     public void execute(ChessGame chessGame) {
         king.setMoved(true);
         rook.setMoved(true);
-        int y = king.getSpot().y;
         chessGame.getBoard().unsetSpot(king.getSpot());
         chessGame.getBoard().unsetSpot(rook.getSpot());
-
-        if (rook.getSpot().x == 0) {
-            chessGame.getBoard().updatePiece(king, new Vector2(2, y));
-            chessGame.getBoard().updatePiece(rook, new Vector2(3, y));
-        } else {
-            chessGame.getBoard().updatePiece(king, new Vector2(6, y));
-            chessGame.getBoard().updatePiece(rook, new Vector2(5, y));
-        }
+        chessGame.getBoard().updatePiece(king, kingDestination);
+        chessGame.getBoard().updatePiece(rook, rookDestination);
     }
 
     @Override
     public void undo(ChessGame chessGame) {
         king.setMoved(false);
         rook.setMoved(false);
-        int y = king.getSpot().y;
         chessGame.getBoard().unsetSpot(king.getSpot());
         chessGame.getBoard().unsetSpot(rook.getSpot());
-        if (king.getSpot().x == 2) {
-            chessGame.getBoard().updatePiece(rook, new Vector2(0, y));
-        } else {
-            chessGame.getBoard().updatePiece(rook, new Vector2(7, y));
-        }
-        chessGame.getBoard().updatePiece(king, new Vector2(4, y));
+        chessGame.getBoard().updatePiece(king, kingOrigin);
+        chessGame.getBoard().updatePiece(rook, rookOrigin);
     }
 
     @Override
     public Vector2 getDestination() {
-        return rook.getSpot();
+        return rookOrigin;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package de.fumano.chess.screen;
+package de.fumano.chess.ui.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

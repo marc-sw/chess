@@ -30,6 +30,10 @@ public class ChessGame implements Resetable {
         this.getActivePlayer().updateLegalMoves(this);
     }
 
+    public List<Move> getMovesMade() {
+        return movesMade;
+    }
+
     public boolean isOver() {
         return over;
     }

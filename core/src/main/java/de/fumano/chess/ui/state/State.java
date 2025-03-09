@@ -1,4 +1,4 @@
-package de.fumano.chess.state;
+package de.fumano.chess.ui.state;
 
 import de.fumano.chess.Vector2;
 

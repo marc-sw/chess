@@ -1,4 +1,4 @@
-package de.fumano.chess.screen;
+package de.fumano.chess.ui.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -32,8 +32,8 @@ public class MenuScreen implements Screen {
         freePlay.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("clicked");
                 chess.setScreen(new GameScreen(chess, new ChessGame(new HumanPlayer(chess.getViewport()), new HumanPlayer(chess.getViewport()))));
+                dispose();
             }
         });
 
@@ -41,8 +41,8 @@ public class MenuScreen implements Screen {
 
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                System.out.println("clicked");
                 chess.setScreen(new GameScreen(chess, new ChessGame(new HumanPlayer(chess.getViewport()), new ComputerPlayer(1f))));
+                dispose();
             }
         });
 
@@ -83,6 +83,7 @@ public class MenuScreen implements Screen {
 
     @Override
     public void dispose() {
+        Gdx.input.setInputProcessor(null);
         stage.dispose();
     }
 }
