@@ -130,8 +130,8 @@ public class StaticRenderer implements Renderer {
         useOnSpriteBatch(() -> {
             this.renderEmptyBoard();
             this.renderTimers(
-                (int) chessGame.getWhitePlayer().getSecondsRemaining(),
-                (int) chessGame.getBlackPlayer().getSecondsRemaining());
+                (int) chessGame.getWhitePlayer().getTimer().getRemainingDuration(),
+                (int) chessGame.getBlackPlayer().getTimer().getRemainingDuration());
 
 
             if (chessGame.getActivePlayer().getMoveStrategy() instanceof ClickStrategy strategy && strategy.getClickState() instanceof PromotionState state) {

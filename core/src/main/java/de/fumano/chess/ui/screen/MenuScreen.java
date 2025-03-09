@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import de.fumano.chess.Chess;
 import de.fumano.chess.ChessGame;
 import de.fumano.chess.player.ClickStrategy;
-import de.fumano.chess.player.RandomStrategy;
+import de.fumano.chess.player.SmartStrategy;
 import de.fumano.chess.ui.components.GamemodeFactory;
 
 public class MenuScreen implements Screen {
@@ -24,17 +24,17 @@ public class MenuScreen implements Screen {
         Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
-        GamemodeFactory factory = new GamemodeFactory(table, chess, style);
+        GamemodeFactory factory = new GamemodeFactory(table, chess, this, style);
         factory.createButton(
             () -> new ChessGame(new ClickStrategy(chess.getViewport()), new ClickStrategy(chess.getViewport())),
             "PvP"
             );
         factory.createButton(
-            () -> new ChessGame(new ClickStrategy(chess.getViewport()), new RandomStrategy(Chess.COMPUTER_TURN_SECONDS)),
+            () -> new ChessGame(new ClickStrategy(chess.getViewport()), new SmartStrategy(Chess.COMPUTER_TURN_SECONDS)),
             "PvE"
         );
         factory.createButton(
-            () -> new ChessGame(new RandomStrategy(Chess.COMPUTER_TURN_SECONDS), new RandomStrategy(Chess.COMPUTER_TURN_SECONDS)),
+            () -> new ChessGame(new SmartStrategy(Chess.COMPUTER_TURN_SECONDS), new SmartStrategy(Chess.COMPUTER_TURN_SECONDS)),
             "EvE"
         );
 

@@ -17,7 +17,7 @@ public class Player implements Resetable {
     protected final List<Move> legalMoves;
     protected King king;
     protected Color color;
-    protected float secondsRemaining;
+    private final Timer timer;
     private final MoveStrategy moveStrategy;
 
     public Player(Board board, Color color, MoveStrategy moveStrategy) {
@@ -26,15 +26,11 @@ public class Player implements Resetable {
         this.king = (King) board.getPieceAt(4, color.equals(Color.WHITE) ? 0: 7);
         this.moveStrategy = moveStrategy;
         this.legalMoves = new ArrayList<>();
-        this.secondsRemaining = Player.START_SECONDS;
+        this.timer = new Timer(START_SECONDS);
     }
 
-    public void reduceTime(float secondsElapsed) {
-        this.secondsRemaining -= secondsElapsed;
-    }
-
-    public boolean isTimerZero() {
-        return this.secondsRemaining <= 0;
+    public Timer getTimer() {
+        return timer;
     }
 
     public Color getColor() {
@@ -92,13 +88,9 @@ public class Player implements Resetable {
         return this.legalMoves.stream().anyMatch(move -> move.getDestination().equals(destination));
     }
 
-    public float getSecondsRemaining() {
-        return this.secondsRemaining;
-    }
-
     @Override
     public void reset() {
-        this.secondsRemaining = Player.START_SECONDS;
+        this.timer.reset();
         this.legalMoves.clear();
         this.moveStrategy.reset();
         this.king = (King) board.getPieceAt(4, color.equals(Color.WHITE) ? 0: 7);

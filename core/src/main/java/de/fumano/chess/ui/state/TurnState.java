@@ -37,7 +37,6 @@ public class TurnState implements ClickState {
     @Override
     public Move selectMove(Vector2 clickedTile, List<Move> moves) {
         Move move;
-        Piece target;
         if (isPieceSelected() && (move = findMoveByDestination(clickedTile)) != null) {
             this.selectedPiece = null;
             if (move instanceof Promotion) {
@@ -52,6 +51,8 @@ public class TurnState implements ClickState {
                 Move found = moves.stream().filter(m -> m.getActor().getSpot().equals(clickedTile)).findAny().orElse(null);
                 if (found != null) {
                     this.selectedPiece = found.getActor();
+                } else {
+                    this.selectedPiece = null;
                 }
             }
         }

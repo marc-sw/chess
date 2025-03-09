@@ -95,10 +95,11 @@ public class ChessGame implements Resetable {
 
     public void update(float secondsElapsed) {
         if (this.over) {
+            System.out.println("over");
             return;
         }
-        this.getActivePlayer().reduceTime(secondsElapsed);
-        if (this.getActivePlayer().isTimerZero()) {
+        this.getActivePlayer().getTimer().update(secondsElapsed);
+        if (this.getActivePlayer().getTimer().isDone()) {
             this.over = true;
             return;
         }

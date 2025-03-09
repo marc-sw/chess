@@ -34,8 +34,8 @@ public class AnimatedRenderer implements Renderer {
         this.staticRenderer.useOnSpriteBatch(() -> {
             this.staticRenderer.renderEmptyBoard();
             this.staticRenderer.renderTimers(
-                (int) chessGame.getWhitePlayer().getSecondsRemaining(),
-                (int) chessGame.getBlackPlayer().getSecondsRemaining());
+                (int) chessGame.getWhitePlayer().getTimer().getRemainingDuration(),
+                (int) chessGame.getBlackPlayer().getTimer().getRemainingDuration());
 
 
             if (chessGame.getActivePlayer().getMoveStrategy() instanceof ClickStrategy strategy && strategy.getClickState() instanceof PromotionState state) {
