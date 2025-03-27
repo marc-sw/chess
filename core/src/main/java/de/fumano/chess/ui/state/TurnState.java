@@ -38,10 +38,11 @@ public class TurnState implements ClickState {
     public Move selectMove(Vector2 clickedTile, List<Move> moves) {
         Move move;
         if (isPieceSelected() && (move = findMoveByDestination(clickedTile)) != null) {
-            this.selectedPiece = null;
             if (move instanceof Promotion) {
                 this.strategy.setClickState(new PromotionState(this.strategy, findAllPromotionMoves(clickedTile)));
+                this.selectedPiece = null;
             } else {
+                this.selectedPiece = null;
                 return move;
             }
         } else {
